@@ -101,6 +101,7 @@ func maybeUpdateIndexFromOneItem(item *cmodel.GraphItem, conn *sql.DB) error {
 				log.Println(err)
 				return err
 			}
+			StarZtreeUpdateIncrTask(endpoint, conn)
 			proc.IndexUpdateIncrDbEndpointInsertCnt.Incr()
 
 			endpointId, err = ret.LastInsertId()

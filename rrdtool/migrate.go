@@ -11,7 +11,7 @@ import (
 	"time"
 
 	pfc "github.com/niean/goperfcounter"
-	"github.com/toolkits/consistent"
+	"stathat.com/c/consistent"
 
 	cmodel "github.com/open-falcon/common/model"
 	"github.com/open-falcon/graph/g"
@@ -93,12 +93,10 @@ func migrate_start(cfg *g.GlobalConfig) {
 	var i int
 	if cfg.Migrate.Enabled {
 		Consistent.NumberOfReplicas = cfg.Migrate.Replicas
-
 		for node, addr := range cfg.Migrate.Cluster {
 			Consistent.Add(node)
 			Net_task_ch[node] = make(chan *Net_task_t, 16)
 			clients[node] = make([]*rpc.Client, cfg.Migrate.Concurrency)
-
 			for i = 0; i < cfg.Migrate.Concurrency; i++ {
 				if clients[node][i], err = dial(addr, time.Second); err != nil {
 					log.Fatalf("node:%s addr:%s err:%s\n", node, addr, err)

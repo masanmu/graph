@@ -24,6 +24,7 @@ func init() {
 	configDebugRoutes()
 	configProcRoutes()
 	configIndexRoutes()
+	configZtreeRoutes()
 	Close_chan = make(chan int, 1)
 	Close_done_chan = make(chan int, 1)
 }

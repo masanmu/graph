@@ -46,7 +46,6 @@ func Start() {
 	if err = file.EnsureDirRW(cfg.RRD.Storage); err != nil {
 		log.Fatalln("rrdtool.Start error, bad data dir "+cfg.RRD.Storage+",", err)
 	}
-
 	migrate_start(cfg)
 
 	// sync disk

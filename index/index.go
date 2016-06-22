@@ -22,7 +22,6 @@ func ReceiveItem(item *cmodel.GraphItem, md5 string) {
 	}
 
 	uuid := item.UUID()
-
 	// 已上报过的数据
 	if indexedItemCache.ContainsKey(md5) {
 		old := indexedItemCache.Get(md5).(*IndexCacheItem)
