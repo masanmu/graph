@@ -3,7 +3,7 @@ package index
 import (
 	"database/sql"
 	"log"
-	"regexp"
+	"net"
 	"strconv"
 	"strings"
 )
@@ -21,7 +21,7 @@ func ztree(endpoint string, conn *sql.DB) error {
 	if len < 0 {
 		return nil
 	}
-	if m := isip(endpoint); m {
+	if m := net.ParseIP(endpoint); m != nil {
 		return nil
 	}
 	var group, idc, service string
@@ -55,13 +55,6 @@ func ztree(endpoint string, conn *sql.DB) error {
 		}
 	}
 	return nil
-}
-
-func isip(ip string) (b bool) {
-	if m, _ := regexp.MatchString("^[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}$", ip); !m {
-		return false
-	}
-	return true
 }
 
 func add(pid, name string, conn *sql.DB) (string, error) {
