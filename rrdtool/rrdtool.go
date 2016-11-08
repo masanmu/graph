@@ -190,11 +190,36 @@ func fetch(filename string, cf string, start, end int64, step int) ([]*cmodel.RR
 	start_t := time.Unix(start, 0)
 	end_t := time.Unix(end, 0)
 	step_t := time.Duration(step) * time.Second
+	
+	info, err := rrdlite.Info(filename)
+        if err != nil {
+                return []*cmodel.RRDData{}, err
+        }
 
-	fetchRes, err := rrdlite.Fetch(filename, cf, start_t, end_t, step_t)
-	if err != nil {
-		return []*cmodel.RRDData{}, err
+
+	last_update := info["last_update"].(uint)
+
+        if last_update < uint(start) {
+        	start_ts := start
+                var val float64 = math.NaN()
+                ret := make([]*cmodel.RRDData, 60)
+                step_s := (end - start) / 60
+                for i := 0; i < 60; i++ {
+                        ts := start_ts + int64(i+1)*int64(step_s)
+                        d := &cmodel.RRDData{
+                                Timestamp: ts,
+                                Value:     cmodel.JsonFloat(val),
+                        }
+                        ret[i] = d
+                }
+                return ret, nil
+		
 	}
+
+        fetchRes, err := rrdlite.Fetch(filename, cf, start_t, end_t, step_t)
+        if err != nil {
+                return []*cmodel.RRDData{}, err
+        }
 
 	defer fetchRes.FreeValues()
 
